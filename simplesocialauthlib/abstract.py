@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 from enum import StrEnum
 from typing import TypeVar, Generic
 
-from simplesocialauthlib.exceptions import CodeExchangeError, UserDataRetrievalError
 
-T = TypeVar('T')
+T = TypeVar("T", bound=dict)
+
 
 class Providers(StrEnum):
     APPLE = "apple"
@@ -14,6 +14,7 @@ class Providers(StrEnum):
     LINKEDIN = "linkedin"
     MICROSOFT = "microsoft"
     TWITTER = "twitter"
+
 
 class SocialAuthAbstract(ABC, Generic[T]):
     """
@@ -71,10 +72,5 @@ class SocialAuthAbstract(ABC, Generic[T]):
             CodeExchangeError: If the code exchange fails.
             UserDataRetrievalError: If the user data retrieval fails.
         """
-        try:
-            access_token = self.exchange_code_for_access_token(code=code)
-            return self.retrieve_user_data(access_token=access_token)
-        except CodeExchangeError as e:
-            raise CodeExchangeError(f"Failed to exchange code for {self.provider}: {str(e)}")
-        except UserDataRetrievalError as e:
-            raise UserDataRetrievalError(f"Failed to retrieve user data for {self.provider}: {str(e)}")
+        access_token = self.exchange_code_for_access_token(code=code)
+        return self.retrieve_user_data(access_token=access_token)
