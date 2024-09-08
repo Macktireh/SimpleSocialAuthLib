@@ -4,12 +4,12 @@ from typing import Final, override
 from google.auth.exceptions import GoogleAuthError
 from google.auth.transport.requests import Request
 from google.oauth2 import id_token
-from requests import HTTPError, RequestException
 from requests_oauthlib import OAuth2Session
 
 from simplesocialauthlib.abstract import Providers, SocialAuthAbstract
 from simplesocialauthlib.exceptions import CodeExchangeError, UserDataRetrievalError
 from simplesocialauthlib.types import GoogleUserData
+from simplesocialauthlib.utils import handle_request_exceptions
 
 logger = logging.getLogger(__name__)
 
@@ -48,37 +48,25 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
         self.redirect_uri = redirect_uri
 
     @override
+    @handle_request_exceptions("code exchange", CodeExchangeError)
     def exchange_code_for_access_token(self, code: str) -> str:
-        try:
-            oauth2_session = OAuth2Session(
-                client_id=self.client_id,
-                redirect_uri=self.redirect_uri,
-                scope=GoogleSocialAuth.GOOGLE_SCOPES,
-            )
-            token = oauth2_session.fetch_token(
-                token_url=GoogleSocialAuth.GOOGLE_TOKEN_ENDPOINT,
-                client_secret=self.client_secret,
-                code=code,
-            )
-            if "id_token" not in token:
-                logger.error(f"Invalid token response: {token}")
-                raise CodeExchangeError("Invalid token response: missing 'id_token'")
-            return token["id_token"]
-        except HTTPError as http_err:
-            logger.error(f"HTTP error occurred during code exchange: {http_err}")
-            raise CodeExchangeError(
-                "HTTP error occurred during code exchange"
-            ) from http_err
-        except RequestException as req_err:
-            logger.error(f"Request exception during code exchange: {req_err}")
-            raise CodeExchangeError(
-                "Request exception during code exchange"
-            ) from req_err
-        except Exception as err:
-            logger.error(f"Unexpected error during code exchange: {err}")
-            raise CodeExchangeError("Unexpected error during code exchange") from err
+        oauth2_session = OAuth2Session(
+            client_id=self.client_id,
+            redirect_uri=self.redirect_uri,
+            scope=GoogleSocialAuth.GOOGLE_SCOPES,
+        )
+        token = oauth2_session.fetch_token(
+            token_url=GoogleSocialAuth.GOOGLE_TOKEN_ENDPOINT,
+            client_secret=self.client_secret,
+            code=code,
+        )
+        if "id_token" not in token:
+            logger.error(f"Invalid token response: {token}")
+            raise CodeExchangeError("Invalid token response: missing 'id_token'")
+        return token["id_token"]
 
     @override
+    @handle_request_exceptions("user data retrieval", UserDataRetrievalError)
     def retrieve_user_data(self, access_token: str) -> GoogleUserData:
         try:
             id_info = id_token.verify_oauth2_token(
@@ -87,6 +75,7 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
                 audience=self.client_id,
             )
             if "accounts.google.com" not in id_info.get("iss", ""):
+                logger.error(f"Invalid token issuer: {id_info.get('iss')}")
                 raise ValueError("Invalid token issuer")
 
             return GoogleUserData(
@@ -100,13 +89,3 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
         except GoogleAuthError as auth_err:
             logger.error(f"Google authentication error: {auth_err}")
             raise UserDataRetrievalError("Google authentication error") from auth_err
-        except ValueError as val_err:
-            logger.error(f"Value error during user data retrieval: {val_err}")
-            raise UserDataRetrievalError(
-                "Value error during user data retrieval"
-            ) from val_err
-        except Exception as err:
-            logger.error(f"Unexpected error during user data retrieval: {err}")
-            raise UserDataRetrievalError(
-                "Unexpected error during user data retrieval"
-            ) from err

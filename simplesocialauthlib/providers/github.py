@@ -2,10 +2,10 @@ import logging
 from typing import Final, override
 
 import requests
-from requests import HTTPError, RequestException
 from simplesocialauthlib.abstract import Providers, SocialAuthAbstract
 from simplesocialauthlib.exceptions import CodeExchangeError, UserDataRetrievalError
 from simplesocialauthlib.types import GithubUserData
+from simplesocialauthlib.utils import handle_request_exceptions
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +38,7 @@ class GithubSocialAuth(SocialAuthAbstract[GithubUserData]):
         self.client_secret = client_secret
 
     @override
+    @handle_request_exceptions("code exchange", CodeExchangeError)
     def exchange_code_for_access_token(self, code: str) -> str:
         payload = {
             "client_id": self.client_id,
@@ -45,60 +46,31 @@ class GithubSocialAuth(SocialAuthAbstract[GithubUserData]):
             "code": code,
         }
         headers = {"Accept": "application/json"}
-        try:
-            response = requests.post(
-                url=self.GITHUB_TOKEN_ENDPOINT, data=payload, headers=headers
-            )
-            response.raise_for_status()
-            token_response = response.json()
-            if "access_token" not in token_response:
-                logger.error(f"Invalid token response: {token_response}")
-                raise CodeExchangeError(
-                    "Invalid token response: missing 'access_token'"
-                )
-            return token_response["access_token"]
-        except HTTPError as http_err:
-            logger.error(f"HTTP error during code exchange: {http_err}")
-            raise CodeExchangeError("HTTP error during code exchange") from http_err
-        except RequestException as req_err:
-            logger.error(f"Request exception during code exchange: {req_err}")
-            raise CodeExchangeError(
-                "Request exception during code exchange"
-            ) from req_err
-        except Exception as err:
-            logger.error(f"Unexpected error during code exchange: {err}")
-            raise CodeExchangeError("Unexpected error during code exchange") from err
+        response = requests.post(
+            url=self.GITHUB_TOKEN_ENDPOINT, data=payload, headers=headers
+        )
+        response.raise_for_status()
+        token_response = response.json()
+        if "access_token" not in token_response:
+            logger.error(f"Invalid token response: {token_response}")
+            raise CodeExchangeError("Invalid token response: missing 'access_token'")
+        return token_response["access_token"]
 
     @override
+    @handle_request_exceptions("user data retrieval", UserDataRetrievalError)
     def retrieve_user_data(self, access_token: str) -> GithubUserData:
-        try:
-            response = requests.get(
-                url=self.GITHUB_USER_INFO_ENDPOINT,
-                headers={"Authorization": f"Bearer {access_token}"},
-            )
-            response.raise_for_status()
-            user_data = response.json()
+        response = requests.get(
+            url=self.GITHUB_USER_INFO_ENDPOINT,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+        response.raise_for_status()
+        user_data = response.json()
 
-            return GithubUserData(
-                username=user_data["login"],
-                full_name=user_data["name"],
-                email=user_data["email"],
-                picture=user_data["avatar_url"],
-                bio=user_data.get("bio"),
-                location=user_data.get("location"),
-            )
-        except HTTPError as http_err:
-            logger.error(f"HTTP error during user data retrieval: {http_err}")
-            raise UserDataRetrievalError(
-                "HTTP error during user data retrieval"
-            ) from http_err
-        except RequestException as req_err:
-            logger.error(f"Request exception during user data retrieval: {req_err}")
-            raise UserDataRetrievalError(
-                "Request exception during user data retrieval"
-            ) from req_err
-        except Exception as err:
-            logger.error(f"Unexpected error during user data retrieval: {err}")
-            raise UserDataRetrievalError(
-                "Unexpected error during user data retrieval"
-            ) from err
+        return GithubUserData(
+            username=user_data["login"],
+            full_name=user_data["name"],
+            email=user_data["email"],
+            picture=user_data["avatar_url"],
+            bio=user_data.get("bio"),
+            location=user_data.get("location"),
+        )
