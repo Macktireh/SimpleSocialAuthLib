@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
+from collections.abc import Mapping
 from enum import StrEnum
-from typing import TypeVar, Generic
+from typing import Any, Generic, TypeVar
 
-
-T = TypeVar("T", bound=dict)
+T = TypeVar("T", bound=Mapping[str, Any])
 
 
 class Providers(StrEnum):

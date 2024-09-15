@@ -1,5 +1,5 @@
 import logging
-from typing import Final, override
+from typing import Final, cast, override
 
 from google.auth.exceptions import GoogleAuthError
 from google.auth.transport.requests import Request
@@ -34,7 +34,7 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
         user_data = auth.sign_in(code="received_code")
     """
 
-    provider: Final[Providers] = Providers.GOOGLE
+    provider = Providers.GOOGLE
     GOOGLE_SCOPES: list[str] = [
         "openid",
         "https://www.googleapis.com/auth/userinfo.profile",
@@ -63,7 +63,7 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
         if "id_token" not in token:
             logger.error(f"Invalid token response: {token}")
             raise CodeExchangeError("Invalid token response: missing 'id_token'")
-        return token["id_token"]
+        return cast(str, token["id_token"])
 
     @override
     @handle_request_exceptions("user data retrieval", UserDataRetrievalError)
