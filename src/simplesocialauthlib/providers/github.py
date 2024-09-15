@@ -1,7 +1,8 @@
 import logging
-from typing import Final, override
+from typing import Final, cast, override
 
 import requests
+
 from simplesocialauthlib.abstract import Providers, SocialAuthAbstract
 from simplesocialauthlib.exceptions import CodeExchangeError, UserDataRetrievalError
 from simplesocialauthlib.types import GithubUserData
@@ -29,7 +30,7 @@ class GithubSocialAuth(SocialAuthAbstract[GithubUserData]):
         user_data = auth.sign_in(code="received_code")
     """
 
-    provider: Final[Providers] = Providers.GITHUB
+    provider: Providers = Providers.GITHUB
     GITHUB_TOKEN_ENDPOINT: Final[str] = "https://github.com/login/oauth/access_token"
     GITHUB_USER_INFO_ENDPOINT: Final[str] = "https://api.github.com/user"
 
@@ -46,15 +47,13 @@ class GithubSocialAuth(SocialAuthAbstract[GithubUserData]):
             "code": code,
         }
         headers = {"Accept": "application/json"}
-        response = requests.post(
-            url=self.GITHUB_TOKEN_ENDPOINT, data=payload, headers=headers
-        )
+        response = requests.post(url=self.GITHUB_TOKEN_ENDPOINT, data=payload, headers=headers)
         response.raise_for_status()
         token_response = response.json()
         if "access_token" not in token_response:
             logger.error(f"Invalid token response: {token_response}")
             raise CodeExchangeError("Invalid token response: missing 'access_token'")
-        return token_response["access_token"]
+        return cast(str, token_response["access_token"])
 
     @override
     @handle_request_exceptions("user data retrieval", UserDataRetrievalError)

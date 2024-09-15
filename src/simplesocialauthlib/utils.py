@@ -1,5 +1,6 @@
 import logging
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from requests.exceptions import HTTPError, RequestException
 
@@ -19,7 +20,7 @@ def handle_request_exceptions(action: str, error_cls: type[Exception]) -> Callab
     """
 
     def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
-        def wrapper(*args, **kwargs) -> Any:
+        def wrapper(*args: tuple[Any, ...], **kwargs: dict[str, Any]) -> Any:
             try:
                 return func(*args, **kwargs)
             except HTTPError as http_err:
