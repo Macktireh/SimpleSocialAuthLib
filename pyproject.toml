@@ -1,7 +1,7 @@
 [project]
 name = "SimpleSocialAuthLib"
 version = "0.1.0"
-description = "Simple Social Auth Library"
+description = "SimpleSocialAuthLib is a lightweight and easy-to-use Python library that simplifies OAuth2 authentication integration with social providers such as Google, GitHub, Facebook, Twitter, and more."
 authors = [
     {name = "Macktireh", email = "abdimack97@gmail.com"},
 ]
@@ -14,10 +14,75 @@ dependencies = [
 ]
 
 [tool.pdm.dev-dependencies]
-linter = [
+lint = [
+    "mypy>=1.11.2",
+    "pre-commit>=3.8.0",
     "ruff>=0.6.3",
+    "types-requests>=2.32.0.20240907",
 ]
+testing = [
+    "flask>=3.0.3",
+]
+
+[tool.pdm.scripts]
+dev = "python tests/app/__init__.py"
+ruff = "ruff check --fix"
 
 
 [tool.pdm]
 distribution = false
+
+[[tool.pdm.source]]
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+name = "tuna"
+
+[[tool.pdm.source]]
+url = "https://mirror.sjtu.edu.cn/pypi/web/simple"
+name = "sjtug"
+
+
+[tool.mypy]
+ignore_missing_imports = true
+
+
+[tool.ruff]
+line-length = 130
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+]
