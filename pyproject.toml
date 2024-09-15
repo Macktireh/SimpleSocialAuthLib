@@ -27,6 +27,7 @@ testing = [
 [tool.pdm.scripts]
 dev = "python tests/app/__init__.py"
 ruff = "ruff check --fix"
+precommit = "pre-commit run --all-files"
 
 
 [tool.pdm]
