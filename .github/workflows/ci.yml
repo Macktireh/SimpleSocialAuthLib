@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: ["develop", "main"]
 
-env:
-  GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-  GOOGLE_REDIRECT_URI: ${{ vars.GOOGLE_REDIRECT_URI }}
-
 jobs:
   code-quality:
     runs-on: ubuntu-latest
@@ -42,7 +38,3 @@ jobs:
         run: pdm install -dG test
       - name: Run tests
         run: pdm run pytest -v
-      - name: secrets for testing
-        run: echo $GOOGLE_CLIENT_ID > ts.txt && cat ts.txt
-      - name: vars for testing
-        run: echo $GOOGLE_REDIRECT_URI > ts.txt && cat ts.txt
