@@ -43,6 +43,6 @@ jobs:
       - name: Run tests
         run: pdm run pytest -v
       - name: secrets for testing
-        run: $GOOGLE_CLIENT_ID > t.txt && cat t.txt
+        run: echo $GOOGLE_CLIENT_ID > ts.txt && cat ts.txt
       - name: vars for testing
-        run: $GOOGLE_REDIRECT_URI > ts.txt && cat ts.txt
+        run: echo $GOOGLE_REDIRECT_URI > ts.txt && cat ts.txt
