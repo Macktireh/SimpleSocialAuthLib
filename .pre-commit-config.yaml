@@ -1,12 +1,5 @@
 repos:
-  # - repo: https://github.com/pre-commit/pre-commit-hooks
-  #   rev: v4.6.0
-  #   hooks:
-  #     - id: check-yaml
-  #     - id: end-of-file-fixer
-  #     - id: trailing-whitespace
-
-  # Linting with ruff.
+  # Linting with ruff
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.6.4
     hooks:
@@ -14,14 +7,14 @@ repos:
         args: [--fix]
       - id: ruff-format
 
-  # Security checks with bandit.
+  # Security checks with bandit
   - repo: https://github.com/PyCQA/bandit
     rev: 1.7.5
     hooks:
       - id: bandit
         args: [-lll, --recursive, src]
 
-  # Run tests locally.
+  # Run tests locally
   - repo: local
     hooks:
       - id: pytest
