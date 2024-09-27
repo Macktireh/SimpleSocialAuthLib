@@ -1,36 +1,50 @@
 [project]
 name = "SimpleSocialAuthLib"
-version = "0.1.0"
+dynamic = ["version"]
 description = "SimpleSocialAuthLib is a lightweight and easy-to-use Python library that simplifies OAuth2 authentication integration with social providers such as Google, GitHub, Facebook, Twitter, and more."
 authors = [
     {name = "Macktireh", email = "abdimack97@gmail.com"},
 ]
 readme = "README.md"
 license = {text = "MIT"}
-requires-python = "==3.12.*"
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries"
+]
+requires-python = ">=3.12"
 dependencies = [
-    "google-api-python-client>=2.143.0",
+    "google-api-python-client>=2.147.0",
     "requests-oauthlib>=2.0.0",
 ]
+
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.version]
+source = "file"
+path = "src/simplesocialauthlib/__init__.py"
 
 [tool.pdm.dev-dependencies]
 lint = [
     "mypy>=1.11.2",
     "pre-commit>=3.8.0",
-    "ruff>=0.6.3",
-    "types-requests>=2.32.0.20240907",
+    "ruff>=0.6.7",
+    "types-requests>=2.32.0.20240914",
 ]
-testing = [
-    "flask>=3.0.3",
+test = [
+    "pytest>=8.3.3",
 ]
+
 
 [tool.pdm.scripts]
-dev = "python tests/app/__init__.py"
 ruff = "ruff check --fix"
-
-
-[tool.pdm]
-distribution = false
+precommit = "pre-commit run --all-files"
 
 [[tool.pdm.source]]
 url = "https://pypi.tuna.tsinghua.edu.cn/simple"
@@ -86,3 +100,8 @@ select = [
     # isort
     "I",
 ]
+
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
