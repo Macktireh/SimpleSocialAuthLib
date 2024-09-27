@@ -1,5 +1,5 @@
 import logging
-from typing import Final, cast, override
+from typing import Any, Final, cast, override
 
 from google.auth.exceptions import GoogleAuthError
 from google.auth.transport.requests import Request
@@ -69,11 +69,7 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
     @handle_request_exceptions("user data retrieval", UserDataRetrievalError)
     def retrieve_user_data(self, access_token: str) -> GoogleUserData:
         try:
-            id_info = id_token.verify_oauth2_token(
-                id_token=access_token,
-                request=Request(),
-                audience=self.client_id,
-            )
+            id_info = cast(dict[str, Any], id_token.verify_oauth2_token(id_token=access_token, request=Request()))
             if "accounts.google.com" not in id_info.get("iss", ""):
                 logger.error(f"Invalid token issuer: {id_info.get('iss')}")
                 raise ValueError("Invalid token issuer")
