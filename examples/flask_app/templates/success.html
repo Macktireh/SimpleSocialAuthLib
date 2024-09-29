@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Auth Lib Test - Success</title>
+  <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+  <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+      defer
+    ></script>
+</head>
+<body class="bg-light">
+  {% include 'components/flash.html' %}
+
+  <div class="container">
+    <h1 class="text-success text-center mt-5">Social Auth Lib Test - Success</h1>
+    <p class="text-center"><a href="/">Back to index</a></p>
+
+    <div class="card mx-auto my-4 shadow-lg" style="max-width: 450px;">
+      <div class="card-body text-center">
+        {% if provider == "google" %}
+          <img src="{{ data.picture }}" class="rounded-circle border border-secondary mb-3" alt="Profile Picture" style="width: 100px; height: 100px;">
+          <h3 class="card-title">{{ data.full_name }}</h3>
+          <p class="card-text">Email: {{ data.email }}</p>
+          <p class="card-text">Email Verified: {{ data.email_verified }}</p>
+        {% elif provider == "github" %}
+          <img src="{{ data.picture }}" class="rounded-circle border border-secondary mb-3" alt="Profile Picture" style="width: 100px; height: 100px;">
+          <h3 class="card-title">{{ data.username }}</h3>
+          <p class="card-text">Full name: {{ data.full_name }}</p>
+          <p class="card-text">Email: {{ data.email }}</p>
+          <p class="card-text">Bio: {{ data.bio }}</p>
+          <p class="card-text">Location: {{ data.location }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+[project]
+name = "flask_app"
+version = "0.1.0"
+description = "Demonstration of SimpleSocialAuthLib usage with Flask."
+authors = [
+    {name = "Macktireh", email = "abdimack97@gmail.com"},
+]
+dependencies = [
+    "flask>=3.0.3",
+    "python-dotenv>=1.0.1",
+    "SimpleSocialAuthLib @ file:///${PROJECT_ROOT}/../..",
+]
+requires-python = ">=3.12"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = false
+
+
+[tool.pdm.scripts]
+dev = "python app.py"
+
+[tool.mypy]
+ignore_missing_imports = true
