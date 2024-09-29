@@ -1,19 +1,20 @@
 [project]
 name = "SimpleSocialAuthLib"
 dynamic = ["version"]
-description = "SimpleSocialAuthLib is a lightweight and easy-to-use Python library that simplifies OAuth2 authentication integration with social providers such as Google, GitHub, Facebook, Twitter, and more."
+description = "SimpleSocialAuthLib is a Python library designed to simplify social authentication for various providers. It offers a straightforward interface for handling OAuth2 flows and retrieving user data from popular social platforms."
 authors = [
     {name = "Macktireh", email = "abdimack97@gmail.com"},
 ]
 readme = "README.md"
 license = {text = "MIT"}
 classifiers = [
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Intended Audience :: Developers",
+    "Typing :: Typed",
     "Topic :: Software Development :: Libraries"
 ]
 requires-python = ">=3.12"
@@ -22,13 +23,18 @@ dependencies = [
     "requests-oauthlib>=2.0.0",
 ]
 
+[project.urls]
+Homepage = "https://github.com/Macktireh/SimpleSocialAuthLib"
+Documentation = "https://github.com/Macktireh/SimpleSocialAuthLib#readme"
+Repository = "https://github.com/Macktireh/SimpleSocialAuthLib"
+Issues = "https://github.com/Macktireh/SimpleSocialAuthLib/issues"
+
 
 [tool.pdm]
 distribution = true
 
 [tool.pdm.version]
-source = "file"
-path = "src/simplesocialauthlib/__init__.py"
+source = "scm"
 
 [tool.pdm.dev-dependencies]
 lint = [
@@ -51,10 +57,6 @@ name = "tuna"
 [[tool.pdm.source]]
 url = "https://mirror.sjtu.edu.cn/pypi/web/simple"
 name = "sjtug"
-
-
-[tool.mypy]
-ignore_missing_imports = true
 
 
 [tool.ruff]
