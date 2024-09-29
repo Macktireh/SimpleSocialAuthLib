@@ -1,4 +1,2 @@
-mypy
 pre-commit
 ruff
-types-requests
