@@ -69,4 +69,4 @@ def sign_in_with_github() -> str:
 
 
 if __name__ == "__main__":
-    app.run(debug=os.environ.get("DEBUG", False), host="localhost", port=5000)
+    app.run(debug=os.environ.get("DEBUG", True), host="localhost", port=5000)
