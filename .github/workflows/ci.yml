@@ -8,6 +8,7 @@ on:
 
 jobs:
   code-quality:
+    name: Code Quality
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -24,6 +25,7 @@ jobs:
         run: pdm run ruff check --diff
 
   testing:
+    name: Testing
     runs-on: ubuntu-latest
     strategy:
       matrix:
