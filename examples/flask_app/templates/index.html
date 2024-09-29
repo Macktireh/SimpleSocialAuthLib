@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Social Auth Lib</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <style>
+      /* Ajout de l'effet hover avec transparence à 40% */
+      .btn-hover-opacity:hover {
+        background-color: rgba(180, 173, 255, 0.45) !important; /* pour un fond sombre semi-transparent */
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    {% include 'components/flash.html' %}
+
+    <div class="container">
+      <h1 class="text-center mt-5 mb-4">Simple Social Auth Lib</h1>
+
+      <div class="d-grid gap-3 mx-auto" style="max-width: 320px;">
+        {% include 'components/google.html' %}
+        {% include 'components/github.html' %}
+      </div>
+    </div>
+  </body>
+</html>
