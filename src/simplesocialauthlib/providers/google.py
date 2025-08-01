@@ -32,7 +32,7 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
     Example:
         auth = GoogleSocialAuth(client_id="your_id", client_secret="your_secret", redirect_uri="your_uri")\n
         user_data = auth.sign_in(code="received_code")
-    """
+    """  # noqa: E501
 
     provider = Providers.GOOGLE
     GOOGLE_SCOPES: list[str] = [
@@ -40,12 +40,30 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
         "https://www.googleapis.com/auth/userinfo.profile",
         "https://www.googleapis.com/auth/userinfo.email",
     ]
-    GOOGLE_TOKEN_ENDPOINT: Final[str] = "https://oauth2.googleapis.com/token"
+    GOOGLE_OAUTH_ENDPOINT: Final[str] = "https://oauth2.googleapis.com/token"
+    GOOGLE_AUTHORIZATION_URL: Final[str] = "https://accounts.google.com/o/oauth2/v2/auth"
 
     def __init__(self, client_id: str, client_secret: str, redirect_uri: str) -> None:
         self.client_id = client_id
         self.client_secret = client_secret
         self.redirect_uri = redirect_uri
+
+    @override
+    def get_authorization_url(self) -> tuple[str, str]:
+        """Generates the Google authorization URL and state."""
+        oauth2_session = OAuth2Session(
+            client_id=self.client_id,
+            redirect_uri=self.redirect_uri,
+            scope=self.GOOGLE_SCOPES,
+        )
+        state = self._generate_state()
+        authorization_url, _ = oauth2_session.authorization_url(
+            url=self.GOOGLE_AUTHORIZATION_URL,
+            access_type="offline",
+            prompt="consent",
+            state=state,
+        )
+        return authorization_url, state
 
     @override
     @handle_request_exceptions("code exchange", CodeExchangeError)
@@ -56,7 +74,7 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
             scope=GoogleSocialAuth.GOOGLE_SCOPES,
         )
         token = oauth2_session.fetch_token(
-            token_url=GoogleSocialAuth.GOOGLE_TOKEN_ENDPOINT,
+            token_url=GoogleSocialAuth.GOOGLE_OAUTH_ENDPOINT,
             client_secret=self.client_secret,
             code=code,
         )
@@ -69,7 +87,10 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
     @handle_request_exceptions("user data retrieval", UserDataRetrievalError)
     def retrieve_user_data(self, access_token: str) -> GoogleUserData:
         try:
-            id_info = cast(dict[str, Any], id_token.verify_oauth2_token(id_token=access_token, request=Request()))
+            id_info = cast(
+                dict[str, Any],
+                id_token.verify_oauth2_token(id_token=access_token, request=Request(), audience=self.client_id),
+            )
             if "accounts.google.com" not in id_info.get("iss", ""):
                 logger.error(f"Invalid token issuer: {id_info.get('iss')}")
                 raise ValueError("Invalid token issuer")
