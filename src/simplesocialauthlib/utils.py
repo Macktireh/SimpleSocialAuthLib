@@ -7,7 +7,9 @@ from requests.exceptions import HTTPError, RequestException
 logger = logging.getLogger(__name__)
 
 
-def handle_request_exceptions(action: str, error_cls: type[Exception]) -> Callable[..., Callable[..., Any]]:
+def handle_request_exceptions(
+    action: str, error_cls: type[Exception]
+) -> Callable[..., Callable[..., Any]]:
     """
     Handle common request exceptions for social auth providers.
 

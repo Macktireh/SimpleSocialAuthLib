@@ -89,7 +89,9 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
         try:
             id_info = cast(
                 dict[str, Any],
-                id_token.verify_oauth2_token(id_token=access_token, request=Request(), audience=self.client_id),
+                id_token.verify_oauth2_token(
+                    id_token=access_token, request=Request(), audience=self.client_id
+                ),
             )
             if "accounts.google.com" not in id_info.get("iss", ""):
                 logger.error(f"Invalid token issuer: {id_info.get('iss')}")
