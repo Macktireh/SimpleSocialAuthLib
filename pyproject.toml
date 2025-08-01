@@ -19,8 +19,18 @@ classifiers = [
 ]
 requires-python = ">=3.12"
 dependencies = [
-    "google-api-python-client>=2.147.0",
-    "requests-oauthlib>=2.0.0",
+    "google-api-python-client>=2.177.0",
+    "requests-oauthlib>=2.0.0"
+]
+
+[dependency-groups]
+lint = [
+    "pre-commit>=4.2.0",
+    "ruff>=0.12.7",
+]
+test = [
+    "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
 ]
 
 [project.urls]
@@ -30,25 +40,16 @@ Repository = "https://github.com/Macktireh/SimpleSocialAuthLib"
 Issues = "https://github.com/Macktireh/SimpleSocialAuthLib/issues"
 
 
+[tool.pdm.scripts]
+test = "pytest -v"
+rufffix = "ruff check --fix"
+precommit = "pre-commit run --all-files"
+
 [tool.pdm]
 distribution = true
 
 [tool.pdm.version]
 source = "scm"
-
-[tool.pdm.dev-dependencies]
-lint = [
-    "pre-commit>=3.8.0",
-    "ruff>=0.6.7",
-]
-test = [
-    "pytest>=8.3.3",
-]
-
-
-[tool.pdm.scripts]
-ruff = "ruff check --fix"
-precommit = "pre-commit run --all-files"
 
 [[tool.pdm.source]]
 url = "https://pypi.tuna.tsinghua.edu.cn/simple"
