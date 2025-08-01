@@ -27,6 +27,10 @@ jobs:
   testing:
     name: Testing
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      checks: write
+      pull-requests: write
     strategy:
       matrix:
         python-version: ["3.12", "3.13"]
