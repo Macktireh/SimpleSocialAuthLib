@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.12"]
+        python-version: ["3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
       - name: Set up PDM
@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.12"]
+        python-version: ["3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
       - name: Set up PDM
@@ -38,5 +38,26 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: pdm install -dG test
-      - name: Run tests
-        run: pdm run pytest -v
+
+      - name: Run tests and build coverage file
+        run: |
+          export PYTHONPATH=src
+          export GEMINI_API_KEY=test
+          pdm run pytest -v \
+          --junitxml=junit.xml -o junit_family=legacy \
+          --cov-report=term-missing \
+          --cov-report=xml \
+          --cov=src -v | tee pytest-coverage.txt
+
+      - name: Pytest coverage comment
+        if: github.event_name == 'pull_request'
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-coverage-path: ./pytest-coverage.txt
+          junitxml-path: ./junit.xml
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: Macktireh/SimpleSocialAuthLib

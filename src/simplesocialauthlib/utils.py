@@ -17,7 +17,7 @@ def handle_request_exceptions(action: str, error_cls: type[Exception]) -> Callab
 
     Returns:
         A function to be used as a decorator for handling exceptions.
-    """
+    """  # noqa: E501
 
     def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         def wrapper(*args: tuple[Any, ...], **kwargs: dict[str, Any]) -> Any:
