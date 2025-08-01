@@ -1,5 +1,5 @@
 <a
-  href="https://github.com/login/oauth/authorize/?client_id={{ GITHUB_CLIENT_ID }}"
+  href="{{ url_for('login_redirect_github') }}"
   class="btn btn-outline-primary d-flex align-items-center btn-hover-opacity"
 >
   <img
