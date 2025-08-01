@@ -1,15 +1,18 @@
 repos:
-  # Linting with ruff
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.4
+    rev: v0.12.7
     hooks:
-      - id: ruff
-        args: [--fix]
+      # Run the linter.
+      - id: ruff-check
+        types_or: [ python, pyi ]
+        args: [ --fix ]
+      # Run the formatter.
       - id: ruff-format
+        types_or: [ python, pyi ]
 
   # Security checks with bandit
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.5
+    rev: 1.8.6
     hooks:
       - id: bandit
         args: [-lll, --recursive, src]
@@ -19,6 +22,6 @@ repos:
     hooks:
       - id: pytest
         name: pytest
-        entry: pytest
+        entry: pytest -v
         language: system
         pass_filenames: false
