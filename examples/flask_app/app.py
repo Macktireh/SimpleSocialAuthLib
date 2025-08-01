@@ -27,20 +27,23 @@ github_auth = GithubSocialAuth(
 )
 
 
-@app.route(rule="/")
+@app.route(rule="/", methods=["POST", "GET"])
 def index() -> str:
-    print(google_auth.redirect_uri)
     return render_template("index.html")
 
 
 # --------------------------------------------------------------------------------
 # ######  Sign in with Google Route
 # --------------------------------------------------------------------------------
-@app.route("/login/google/redirect")
+@app.route("/login/google/redirect", methods=["POST"])
 def login_redirect_google() -> Response:
     """Redirects the user to Google for authentication."""
+    if request.method != "POST":
+        flash("Invalid request method.", category="danger")
+        return redirect("/")
+
     authorization_url, state = google_auth.get_authorization_url()
-    session["oauth_state"] = state  # Stocker le state dans la session
+    session["oauth_state"] = state
     return redirect(authorization_url)
 
 
@@ -68,9 +71,13 @@ def login_callback_google() -> Response | str:
 # --------------------------------------------------------------------------------
 # ######  Sign in with Github Route
 # --------------------------------------------------------------------------------
-@app.route("/login/github/redirect")
+@app.route("/login/github/redirect", methods=["POST"])
 def login_redirect_github() -> Response:
     """Redirects the user to GitHub for authentication."""
+    if request.method != "POST":
+        flash("Invalid request method.", category="danger")
+        return redirect("/")
+
     authorization_url, state = github_auth.get_authorization_url()
     session["oauth_state"] = state
     return redirect(authorization_url)

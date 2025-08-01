@@ -1,12 +1,14 @@
-<a
-  href="{{ url_for('login_redirect_github') }}"
-  class="btn btn-outline-primary d-flex align-items-center btn-hover-opacity"
->
-  <img
-    src="https://raw.githubusercontent.com/Macktireh/Media/651356b9f47cf6fd10fe03ada33e3e72c16a4087/svg/github.svg"
-    alt="Github"
-    class="me-2"
-    style="width: 2rem; height: 2rem"
-  />
-  <span>Login with Github</span>
-</a>
+<form method="POST" action="{{ url_for('login_redirect_github') }}">
+  <button
+    type="submit"
+    class="btn btn-outline-primary w-100 d-flex justify-content-center align-items-center gap-1 btn-hover-opacity"
+  >
+    <img
+      src="https://raw.githubusercontent.com/Macktireh/Media/651356b9f47cf6fd10fe03ada33e3e72c16a4087/svg/github.svg"
+      alt="Github"
+      class="me-2"
+      style="width: 2rem; height: 2rem"
+    />
+    <span>Login with Github</span>
+  </button>
+</form>
