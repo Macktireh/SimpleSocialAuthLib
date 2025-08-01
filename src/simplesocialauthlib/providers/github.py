@@ -1,5 +1,6 @@
 import logging
 from typing import Final, cast, override
+from urllib.parse import urlencode
 
 import requests
 
@@ -28,15 +29,28 @@ class GithubSocialAuth(SocialAuthAbstract[GithubUserData]):
     Example:
         auth = GithubSocialAuth(client_id="your_id", client_secret="your_secret")\n
         user_data = auth.sign_in(code="received_code")
-    """
+    """  # noqa: E501
 
     provider: Providers = Providers.GITHUB
-    GITHUB_TOKEN_ENDPOINT: Final[str] = "https://github.com/login/oauth/access_token"
+    GITHUB_OAUTH_ENDPOINT: Final[str] = "https://github.com/login/oauth/access_token"
+    GITHUB_AUTHORIZATION_URL: Final[str] = "https://github.com/login/oauth/authorize"
     GITHUB_USER_INFO_ENDPOINT: Final[str] = "https://api.github.com/user"
 
     def __init__(self, client_id: str, client_secret: str) -> None:
         self.client_id = client_id
         self.client_secret = client_secret
+        self.session = requests.Session()
+
+    @override
+    def get_authorization_url(self) -> tuple[str, str]:
+        """Generates the GitHub authorization URL and state."""
+        state = self._generate_state()
+        params = {
+            "client_id": self.client_id,
+            "state": state,
+            "scope": "user:email",
+        }
+        return f"{self.GITHUB_AUTHORIZATION_URL}?{urlencode(params)}", state
 
     @override
     @handle_request_exceptions("code exchange", CodeExchangeError)
@@ -47,7 +61,7 @@ class GithubSocialAuth(SocialAuthAbstract[GithubUserData]):
             "code": code,
         }
         headers = {"Accept": "application/json"}
-        response = requests.post(url=self.GITHUB_TOKEN_ENDPOINT, data=payload, headers=headers)
+        response = self.session.post(url=self.GITHUB_OAUTH_ENDPOINT, data=payload, headers=headers)
         response.raise_for_status()
         token_response = response.json()
         if "access_token" not in token_response:
@@ -58,7 +72,7 @@ class GithubSocialAuth(SocialAuthAbstract[GithubUserData]):
     @override
     @handle_request_exceptions("user data retrieval", UserDataRetrievalError)
     def retrieve_user_data(self, access_token: str) -> GithubUserData:
-        response = requests.get(
+        response = self.session.get(
             url=self.GITHUB_USER_INFO_ENDPOINT,
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -67,9 +81,9 @@ class GithubSocialAuth(SocialAuthAbstract[GithubUserData]):
 
         return GithubUserData(
             username=user_data["login"],
-            full_name=user_data["name"],
-            email=user_data["email"],
-            picture=user_data["avatar_url"],
+            full_name=user_data.get("name"),
+            email=user_data.get("email"),
+            picture=user_data.get("avatar_url"),
             bio=user_data.get("bio"),
             location=user_data.get("location"),
         )
