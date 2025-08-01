@@ -17,9 +17,8 @@
       defer
     ></script>
     <style>
-      /* Ajout de l'effet hover avec transparence à 40% */
       .btn-hover-opacity:hover {
-        background-color: rgba(180, 173, 255, 0.45) !important; /* pour un fond sombre semi-transparent */
+        background-color: rgba(180, 173, 255, 0.45) !important;
       }
     </style>
   </head>
@@ -29,7 +28,7 @@
     <div class="container">
       <h1 class="text-center mt-5 mb-4">Simple Social Auth Lib</h1>
 
-      <div class="d-grid gap-3 mx-auto" style="max-width: 320px;">
+      <div class="d-flex flex-column gap-3 mx-auto" style="max-width: 320px;">
         {% include 'components/google.html' %}
         {% include 'components/github.html' %}
       </div>
