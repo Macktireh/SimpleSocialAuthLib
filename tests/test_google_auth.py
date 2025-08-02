@@ -21,7 +21,9 @@ def google_auth() -> GoogleSocialAuth:
 
 
 @patch("simplesocialauthlib.providers.google.OAuth2Session")
-def test_get_authorization_url(mock_oauth2_session: MagicMock, google_auth: GoogleSocialAuth) -> None:
+def test_get_authorization_url(
+    mock_oauth2_session: MagicMock, google_auth: GoogleSocialAuth
+) -> None:
     """Test that get_authorization_url returns a valid URL and state."""
     mock_session_instance = MagicMock()
     mock_session_instance.authorization_url.return_value = (
@@ -39,13 +41,17 @@ def test_get_authorization_url(mock_oauth2_session: MagicMock, google_auth: Goog
 
 @patch("simplesocialauthlib.providers.google.GoogleSocialAuth.retrieve_user_data")
 @patch("simplesocialauthlib.providers.google.GoogleSocialAuth.exchange_code_for_access_token")
-def test_sign_in_success(mock_exchange: MagicMock, mock_retrieve: MagicMock, google_auth: GoogleSocialAuth) -> None:
+def test_sign_in_success(
+    mock_exchange: MagicMock, mock_retrieve: MagicMock, google_auth: GoogleSocialAuth
+) -> None:
     """Test the complete sign_in flow successfully."""
     mock_exchange.return_value = "test_access_token"
     mock_retrieve.return_value = {"full_name": "Test User", "email": "test@test.com"}
     test_state = "super_secret_state"
 
-    user_data = google_auth.sign_in(code="test_code", received_state=test_state, saved_state=test_state)
+    user_data = google_auth.sign_in(
+        code="test_code", received_state=test_state, saved_state=test_state
+    )
 
     mock_exchange.assert_called_once_with(code="test_code")
     mock_retrieve.assert_called_once_with(access_token="test_access_token")
@@ -72,7 +78,9 @@ def test_sign_in_state_missing(google_auth: GoogleSocialAuth) -> None:
     "simplesocialauthlib.providers.google.GoogleSocialAuth.exchange_code_for_access_token",
     side_effect=CodeExchangeError("Failed to exchange code"),
 )
-def test_sign_in_code_exchange_failure(mock_exchange: MagicMock, google_auth: GoogleSocialAuth) -> None:
+def test_sign_in_code_exchange_failure(
+    mock_exchange: MagicMock, google_auth: GoogleSocialAuth
+) -> None:
     """Test that sign_in fails if code exchange fails."""
     test_state = "super_secret_state"
     with pytest.raises(CodeExchangeError):

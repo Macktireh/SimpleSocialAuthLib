@@ -41,7 +41,6 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
         "https://www.googleapis.com/auth/userinfo.email",
     ]
     GOOGLE_OAUTH_ENDPOINT: Final[str] = "https://oauth2.googleapis.com/token"
-    GOOGLE_AUTHORIZATION_URL: Final[str] = "https://accounts.google.com/o/oauth2/v2/auth"
 
     def __init__(self, client_id: str, client_secret: str, redirect_uri: str) -> None:
         self.client_id = client_id
@@ -51,6 +50,7 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
     @override
     def get_authorization_url(self) -> tuple[str, str]:
         """Generates the Google authorization URL and state."""
+        _GOOGLE_AUTHORIZATION_URL = "https://accounts.google.com/o/oauth2/v2/auth"
         oauth2_session = OAuth2Session(
             client_id=self.client_id,
             redirect_uri=self.redirect_uri,
@@ -58,7 +58,7 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
         )
         state = self._generate_state()
         authorization_url, _ = oauth2_session.authorization_url(
-            url=self.GOOGLE_AUTHORIZATION_URL,
+            url=_GOOGLE_AUTHORIZATION_URL,
             access_type="offline",
             prompt="consent",
             state=state,
@@ -89,7 +89,9 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
         try:
             id_info = cast(
                 dict[str, Any],
-                id_token.verify_oauth2_token(id_token=access_token, request=Request(), audience=self.client_id),
+                id_token.verify_oauth2_token(
+                    id_token=access_token, request=Request(), audience=self.client_id
+                ),
             )
             if "accounts.google.com" not in id_info.get("iss", ""):
                 logger.error(f"Invalid token issuer: {id_info.get('iss')}")

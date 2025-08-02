@@ -59,9 +59,13 @@ def login_callback_google() -> Response | str:
         return redirect("/")
 
     try:
-        user_data = google_auth.sign_in(code=code, received_state=received_state, saved_state=saved_state)
+        user_data = google_auth.sign_in(
+            code=code, received_state=received_state, saved_state=saved_state
+        )
         flash(f"Signed in with Google as {user_data['full_name']}.", category="success")
-        return render_template(template_name_or_list="success.html", data=user_data, provider=google_auth.provider)
+        return render_template(
+            template_name_or_list="success.html", data=user_data, provider=google_auth.provider
+        )
     except Exception as e:
         logging.error(e)
         flash("Something went wrong. Please try again.", category="danger")
@@ -95,9 +99,13 @@ def login_callback_github() -> Response | str:
         return redirect("/")
 
     try:
-        user_data = github_auth.sign_in(code=code, received_state=received_state, saved_state=saved_state)
+        user_data = github_auth.sign_in(
+            code=code, received_state=received_state, saved_state=saved_state
+        )
         flash(f"Signed in with Github as {user_data['username']}.", category="success")
-        return render_template(template_name_or_list="success.html", data=user_data, provider=github_auth.provider)
+        return render_template(
+            template_name_or_list="success.html", data=user_data, provider=github_auth.provider
+        )
     except Exception as e:
         logging.error(e)
         flash("Something went wrong. Please try again.", category="danger")
