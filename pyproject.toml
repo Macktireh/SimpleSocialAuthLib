@@ -11,6 +11,7 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Intended Audience :: Developers",
@@ -18,9 +19,19 @@ classifiers = [
     "Topic :: Software Development :: Libraries"
 ]
 requires-python = ">=3.12"
-dependencies = [
+dependencies = []
+
+[project.optional-dependencies]
+google = [
     "google-api-python-client>=2.177.0",
     "requests-oauthlib>=2.0.0"
+]
+github = [
+    "requests>=2.32.4"
+]
+all = [
+    "SimpleSocialAuthLib[google]",
+    "SimpleSocialAuthLib[github]",
 ]
 
 [dependency-groups]
@@ -29,6 +40,7 @@ lint = [
     "ruff>=0.12.7",
 ]
 test = [
+    "SimpleSocialAuthLib[all]",
     "pytest>=8.4.1",
     "pytest-cov>=6.2.1",
 ]

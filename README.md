@@ -26,15 +26,40 @@ SimpleSocialAuthLib is a Python library designed to simplify social authenticati
 
 You can install SimpleSocialAuthLib using your preferred Python package manager:
 
+### Using pip
+
 ```bash
-# using pip
-pip install simplesocialauthlib
+# Install the library with all providers and dependencies
+pip install simplesocialauthlib[all]
 
-# using pdm
-pdm add simplesocialauthlib
+# Or install specific providers
+pip install simplesocialauthlib[github]  # For GitHub
+pip install simplesocialauthlib[google]  # For Google
+pip install simplesocialauthlib[github,google]  # For both GitHub and Google
+```
 
-# using uv
-uv add simplesocialauthlib
+### Using PDM
+
+```bash
+# Install the library with all providers and dependencies
+pdm add simplesocialauthlib[all]
+
+# Or install specific providers
+pdm add simplesocialauthlib[github]  # For GitHub
+pdm add simplesocialauthlib[google]  # For Google
+pdm add simplesocialauthlib[github,google]  # For both GitHub and Google
+```
+
+### Using UV
+
+```bash
+# Install the library with all providers and dependencies
+uv add simplesocialauthlib[all]
+
+# Or install specific providers
+uv add simplesocialauthlib[github]  # For GitHub
+uv add simplesocialauthlib[google]  # For Google
+uv add simplesocialauthlib[github,google]  # For both GitHub and Google
 ```
 
 ## Configuration
