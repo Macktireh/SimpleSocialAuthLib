@@ -40,7 +40,6 @@ lint = [
     "ruff>=0.12.7",
 ]
 test = [
-    "SimpleSocialAuthLib[all]",
     "pytest>=8.4.1",
     "pytest-cov>=6.2.1",
 ]

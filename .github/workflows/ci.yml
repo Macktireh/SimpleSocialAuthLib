@@ -41,7 +41,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: pdm install -dG test
+        run: pdm install -G:all -G test
 
       - name: Run tests and build coverage file
         run: |
