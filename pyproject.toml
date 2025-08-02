@@ -30,8 +30,9 @@ github = [
     "requests>=2.32.4"
 ]
 all = [
-    "SimpleSocialAuthLib[google]",
-    "SimpleSocialAuthLib[github]",
+    "google-api-python-client>=2.177.0",
+    "requests-oauthlib>=2.0.0",
+    "requests>=2.32.4",
 ]
 
 [dependency-groups]
