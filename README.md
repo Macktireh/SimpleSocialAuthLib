@@ -1,8 +1,26 @@
-<h1 align="center">🔐 SimpleSocialAuthLib #️⃣</h1>
+<h1 align="center">SimpleSocialAuthLib</h1>
 
 <p align="center">
+    <!-- row 1 — project metadata -->
+    <a href="https://pypi.org/project/SimpleSocialAuthLib">
+      <img src="https://img.shields.io/pypi/v/SimpleSocialAuthLib.svg" alt="PyPI Package Version">
+    </a>
+    <a href="https://pypi.org/project/SimpleSocialAuthLib">
+      <img src="https://img.shields.io/pypi/pyversions/SimpleSocialAuthLib.svg" alt="Python Versions">
+    </a>
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" />
+    <br>
+    <!-- row 2 — project status -->
+    <a href="https://github.com/Macktireh/SimpleSocialAuthLib/actions/workflows/ci.yml?query=branch%3Amain">
+      <img src="https://github.com/Macktireh/SimpleSocialAuthLib/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI">
+    </a>
     <img src="https://codecov.io/gh/Macktireh/SimpleSocialAuthLib/branch/main/graph/badge.svg?token=41GGNZR0PC" alt="codecov" />
+    <a href="https://pdm-project.org">
+      <img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fpdm-project%2F.github%2Fbadge.json" alt="PDM">
+    </a>
+    <a href="https://github.com/astral-sh/ruff">
+      <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff">
+    </a>
 </p>
 
 SimpleSocialAuthLib is a Python library designed to simplify social authentication. It offers a secure and straightforward interface for handling OAuth2 flows and retrieving user data from popular social platforms.
@@ -100,7 +118,6 @@ Here is a full example using **Flask** to implement social login with Google and
 # app.py
 
 import os
-import logging
 
 from flask import Flask, request, redirect, flash, render_template, session, url_for
 from dotenv import load_dotenv
@@ -109,14 +126,11 @@ from simplesocialauthlib.providers import GithubSocialAuth, GoogleSocialAuth
 
 # Load environment variables from .env file
 load_dotenv()
-logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
-# A secret key is required for Flask session management
 app.secret_key = os.environ.get("SECRET_KEY", "a-strong-default-secret-key-for-dev")
 
 # --- Initialize Providers ---
-# It's best practice to initialize these once when the app starts.
 google_auth = GoogleSocialAuth(
     client_id=os.environ["GOOGLE_CLIENT_ID"],
     client_secret=os.environ["GOOGLE_CLIENT_SECRET"],
@@ -129,7 +143,6 @@ github_auth = GithubSocialAuth(
 )
 
 
-# --- Template Routes ---
 @app.route("/")
 def index():
     return "Welcome! You are not signed in. <a href='/login'>Login</a>"
@@ -212,8 +225,6 @@ def callback_github():
 
 
 if __name__ == "__main__":
-    # Ensure you are not running in debug mode in production!
-    # The callback must use HTTPS in production.
     app.run(debug=True, port=5000)
 ```
 
@@ -283,8 +294,18 @@ class GithubUserData(TypedDict):
 
 We welcome contributions to SimpleSocialAuthLib\! If you'd like to contribute, please follow these steps:
 
-1.  Fork the repository.
+1.  Fork the repository and install dependencies
+    ```bash
+    git clone https://github.com/Macktireh/SimpleSocialAuthLib.git
+    cd SimpleSocialAuthLib
+    ```
+    ```bash
+    pdm install
+    ```
 2.  Create a new branch for your feature or bug fix.
+    ```bash
+    git checkout -b feature/my-feature
+    ```
 3.  Implement your changes, ensuring they adhere to the existing code style and conventions.
 4.  Write comprehensive tests for your new features or bug fixes.
 5.  Update the documentation to reflect any changes in functionality or API.
