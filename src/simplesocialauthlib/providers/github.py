@@ -40,7 +40,6 @@ class GithubSocialAuth(SocialAuthAbstract[GithubUserData]):
     def __init__(self, client_id: str, client_secret: str) -> None:
         self.client_id = client_id
         self.client_secret = client_secret
-        self.session = requests.Session()
 
     @override
     def get_authorization_url(self) -> tuple[str, str]:
@@ -62,7 +61,7 @@ class GithubSocialAuth(SocialAuthAbstract[GithubUserData]):
             "code": code,
         }
         headers = {"Accept": "application/json"}
-        response = self.session.post(
+        response = requests.post(
             url=self.GITHUB_OAUTH_ENDPOINT,
             data=payload,
             headers=headers,
@@ -78,7 +77,7 @@ class GithubSocialAuth(SocialAuthAbstract[GithubUserData]):
     @override
     @handle_request_exceptions("user data retrieval", UserDataRetrievalError)
     def retrieve_user_data(self, access_token: str) -> GithubUserData:
-        response = self.session.get(
+        response = requests.get(
             url=self.GITHUB_USER_INFO_ENDPOINT,
             headers={"Authorization": f"Bearer {access_token}"},
             timeout=self.REQUEST_TIMEOUT,
