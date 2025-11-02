@@ -41,6 +41,7 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
         "https://www.googleapis.com/auth/userinfo.email",
     ]
     GOOGLE_OAUTH_ENDPOINT: Final[str] = "https://oauth2.googleapis.com/token"
+    REQUEST_TIMEOUT: Final[int] = 10
 
     def __init__(self, client_id: str, client_secret: str, redirect_uri: str) -> None:
         self.client_id = client_id
@@ -77,6 +78,7 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
             token_url=GoogleSocialAuth.GOOGLE_OAUTH_ENDPOINT,
             client_secret=self.client_secret,
             code=code,
+            timeout=self.REQUEST_TIMEOUT,
         )
         if "id_token" not in token:
             logger.error("Invalid token response: missing 'id_token' field")

@@ -35,6 +35,7 @@ class GithubSocialAuth(SocialAuthAbstract[GithubUserData]):
     GITHUB_OAUTH_ENDPOINT: Final[str] = "https://github.com/login/oauth/access_token"
     GITHUB_AUTHORIZATION_URL: Final[str] = "https://github.com/login/oauth/authorize"
     GITHUB_USER_INFO_ENDPOINT: Final[str] = "https://api.github.com/user"
+    REQUEST_TIMEOUT: Final[int] = 10
 
     def __init__(self, client_id: str, client_secret: str) -> None:
         self.client_id = client_id
@@ -61,7 +62,12 @@ class GithubSocialAuth(SocialAuthAbstract[GithubUserData]):
             "code": code,
         }
         headers = {"Accept": "application/json"}
-        response = self.session.post(url=self.GITHUB_OAUTH_ENDPOINT, data=payload, headers=headers)
+        response = self.session.post(
+            url=self.GITHUB_OAUTH_ENDPOINT,
+            data=payload,
+            headers=headers,
+            timeout=self.REQUEST_TIMEOUT,
+        )
         response.raise_for_status()
         token_response = response.json()
         if "access_token" not in token_response:
@@ -75,6 +81,7 @@ class GithubSocialAuth(SocialAuthAbstract[GithubUserData]):
         response = self.session.get(
             url=self.GITHUB_USER_INFO_ENDPOINT,
             headers={"Authorization": f"Bearer {access_token}"},
+            timeout=self.REQUEST_TIMEOUT,
         )
         response.raise_for_status()
         user_data = response.json()
