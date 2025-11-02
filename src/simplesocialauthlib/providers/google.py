@@ -79,7 +79,7 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
             code=code,
         )
         if "id_token" not in token:
-            logger.error(f"Invalid token response: {token}")
+            logger.error("Invalid token response: missing 'id_token' field")
             raise CodeExchangeError("Invalid token response: missing 'id_token'")
         return cast(str, token["id_token"])
 
@@ -94,7 +94,7 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
                 ),
             )
             if "accounts.google.com" not in id_info.get("iss", ""):
-                logger.error(f"Invalid token issuer: {id_info.get('iss')}")
+                logger.error("Invalid token issuer detected")
                 raise ValueError("Invalid token issuer")
 
             return GoogleUserData(

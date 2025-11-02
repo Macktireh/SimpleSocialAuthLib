@@ -65,7 +65,7 @@ class GithubSocialAuth(SocialAuthAbstract[GithubUserData]):
         response.raise_for_status()
         token_response = response.json()
         if "access_token" not in token_response:
-            logger.error(f"Invalid token response: {token_response}")
+            logger.error("Invalid token response: missing 'access_token' field")
             raise CodeExchangeError("Invalid token response: missing 'access_token'")
         return cast(str, token_response["access_token"])
 
