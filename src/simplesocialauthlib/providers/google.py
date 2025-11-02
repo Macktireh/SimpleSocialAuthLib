@@ -41,6 +41,12 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
         "https://www.googleapis.com/auth/userinfo.email",
     ]
     GOOGLE_OAUTH_ENDPOINT: Final[str] = "https://oauth2.googleapis.com/token"
+    # Valid Google token issuers as per Google's documentation
+    # https://developers.google.com/identity/protocols/oauth2/openid-connect#validatinganidtoken
+    VALID_ISSUERS: Final[tuple[str, ...]] = (
+        "https://accounts.google.com",
+        "accounts.google.com",
+    )
     REQUEST_TIMEOUT: Final[int] = 10
 
     def __init__(self, client_id: str, client_secret: str, redirect_uri: str) -> None:
@@ -95,9 +101,14 @@ class GoogleSocialAuth(SocialAuthAbstract[GoogleUserData]):
                     id_token=access_token, request=Request(), audience=self.client_id
                 ),
             )
-            if "accounts.google.com" not in id_info.get("iss", ""):
+
+            # Strict validation: exact match against known valid issuers
+            token_issuer = id_info.get("iss", "")
+            if token_issuer not in self.VALID_ISSUERS:
                 logger.error("Invalid token issuer detected")
-                raise ValueError("Invalid token issuer")
+                raise ValueError(
+                    f"Token issuer validation failed. Expected one of {self.VALID_ISSUERS}"
+                )
 
             return GoogleUserData(
                 first_name=id_info["given_name"],
